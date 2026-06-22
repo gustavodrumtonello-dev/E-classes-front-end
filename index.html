@@ -105,4 +105,28 @@
     <script src="service/api.js"></script>
     <script src="controller/app.js"></script>
 </body>
-</html>
+</html>// ...existing code...
+    <script src="service/api.js"></script>
+    <script src="controller/app.js"></script>
+
+{ changed code }
+    <script>
+        // Carrega data.json e expõe em window.appData; chama init se existir
+        (async function loadDataJson() {
+            try {
+                const res = await fetch('./data.json');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                window.appData = data;
+                if (typeof window.initApp === 'function') {
+                    window.initApp(data);
+                } else if (window.App && typeof window.App.init === 'function') {
+                    window.App.init(data);
+                }
+                console.log('data.json carregado', data);
+            } catch (err) {
+                console.error('Erro ao carregar data.json:', err);
+            }
+        })();
+    </script>
+// ...existing code...
