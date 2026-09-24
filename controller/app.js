@@ -75,11 +75,11 @@ function renderizarDashboard() {
         <div class="card"><span class="card-tag">Pendentes</span><h3>${agendados}</h3><p class="subtitle">Agendamentos</p></div>
         
         <!-- Elemento Inteligente Compacto -->
-        <div class="card" id="lootbox-card">
-            <span class="card-tag" style="background: linear-gradient(135deg, color: white, color: white); color: black;">Bónus</span>
+        <div class="card" id="lootbox-card" style="user-select: none; -webkit-user-select: none;">
             <div class="box-icon-anim" id="box-wrapper"><i class="fas fa-box" id="box-icon"></i></div>
             <p class="subtitle" id="box-text" style="font-size: 0.85rem; font-weight: 700; margin-top: 5px; color: #3d2813 !important;">Abrir Caixa!</p>
         </div>
+
     `;
 
     const lootBox = document.getElementById('lootbox-card');
@@ -123,26 +123,26 @@ function renderizarDashboard() {
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 2000); // Remove após 2s
         }
+        const lista = state.confrontos.filter(c => c.status === 'scheduled').slice(0, 3);
+
+        proximos.innerHTML = lista.map(c => {
+            const jogo = state.jogos.find(j => j.id == c.gameId);
+            const time1 = state.times.find(t => t.id == c.team1Id);
+            const time2 = state.times.find(t => t.id == c.team2Id);
+            return `
+                    <div class="card">
+                        <span class="card-tag">${jogo?.name || 'Jogo'}</span>
+                        <div class="match-card">
+                            <div class="team-score"><strong>${time1?.name || 'TBD'}</strong></div>
+                            <div class="vs">VS</div>
+                            <div class="team-score"><strong>${time2?.name || 'TBD'}</strong></div>
+                        </div>
+                    </div>
+                `;
+        }).join('');
+
     });
 }
-
-const lista = state.confrontos.filter(c => c.status === 'scheduled').slice(0, 3);
-
-proximos.innerHTML = lista.map(c => {
-    const jogo = state.jogos.find(j => j.id == c.gameId);
-    const time1 = state.times.find(t => t.id == c.team1Id);
-    const time2 = state.times.find(t => t.id == c.team2Id);
-    return `
-            <div class="card">
-                <span class="card-tag">${jogo?.name || 'Jogo'}</span>
-                <div class="match-card">
-                    <div class="team-score"><strong>${time1?.name || 'TBD'}</strong></div>
-                    <div class="vs">VS</div>
-                    <div class="team-score"><strong>${time2?.name || 'TBD'}</strong></div>
-                </div>
-            </div>
-        `;
-}).join('');
 
 
 function renderizarJogos() {
