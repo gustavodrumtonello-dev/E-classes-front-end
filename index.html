@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GamerClass | Sistema Interclasses Pro</title>
     <link rel="stylesheet" href="style/index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FontAwesome atualizado para garantir o suporte aos ícones de caixa -->
+    <link rel="stylesheet" href="https://cloudflare.com">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -21,7 +24,7 @@
                     <li data-view="jogos"><i class="fas fa-trophy"></i> Jogos</li>
                     <li data-view="times"><i class="fas fa-users"></i> Times</li>
                     <li data-view="competidores"><i class="fas fa-user-ninja"></i> Competidores</li>
-                    <li data-view="confrontos"><i class="fa-solid fa-hand-fist"></i></i> Confrontos</li>
+                    <li data-view="confrontos"><i class="fa-solid fa-hand-fist"></i> Confrontos</li>
                 </ul>
             </nav>
         </aside>
@@ -34,6 +37,7 @@
                     <h1>Arena GamerClass</h1>
                     <p class="subtitle">O epicentro da competição interclasses 2026.</p>
                 </div>
+                <!-- O app.js vai injetar os 4 cards normais + a caixa bónus inteligente aqui dentro -->
                 <div class="stats-row" id="dashboard-stats"></div>
                 <h2>Próximos Grandes Confrontos</h2>
                 <div class="grid-container" id="upcoming-matches"></div>
@@ -98,35 +102,13 @@
     </div>
 
     <!-- Modal -->
-    <div id="modal-container" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);">
+    <div id="modal-container"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);">
         <div class="form-container" id="form-content"></div>
     </div>
 
     <script src="service/api.js"></script>
     <script src="controller/app.js"></script>
 </body>
-</html>// ...existing code...
-    <script src="service/api.js"></script>
-    <script src="controller/app.js"></script>
 
-{ changed code }
-    <script>
-        // Carrega data.json e expõe em window.appData; chama init se existir
-        (async function loadDataJson() {
-            try {
-                const res = await fetch('./data.json');
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                window.appData = data;
-                if (typeof window.initApp === 'function') {
-                    window.initApp(data);
-                } else if (window.App && typeof window.App.init === 'function') {
-                    window.App.init(data);
-                }
-                console.log('data.json carregado', data);
-            } catch (err) {
-                console.error('Erro ao carregar data.json:', err);
-            }
-        })();
-    </script>
-// ...existing code...
+</html>

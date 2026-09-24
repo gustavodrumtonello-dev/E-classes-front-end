@@ -63,41 +63,76 @@ function renderizarTudo() {
 
 function renderizarDashboard() {
     const stats = document.getElementById('dashboard-stats');
-    const proximos = document.getElementById('upcoming-matches');
+    if (stats) stats.style.gridTemplateColumns = 'repeat(5, 1fr)';
 
     const encerrados = state.confrontos.filter(c => c.status === 'finished').length;
     const agendados = state.confrontos.filter(c => c.status === 'scheduled').length;
 
     stats.innerHTML = `
-        <div class="card">
-            <span class="card-tag">Torneio</span>
-            <h3>${state.times.length}</h3>
-            <p class="subtitle">Equipes</p>
-        </div>
-        <div class="card">
-            <span class="card-tag">Atletas</span>
-            <h3>${state.competidores.length}</h3>
-            <p class="subtitle">Competidores</p>
-        </div>
-        <div class="card">
-            <span class="card-tag">Encerrados</span>
-            <h3>${encerrados}</h3>
-            <p class="subtitle">Resultados</p>
-        </div>
-        <div class="card">
-            <span class="card-tag">Pendentes</span>
-            <h3>${agendados}</h3>
-            <p class="subtitle">Agendamentos</p>
+        <div class="card"><span class="card-tag">Torneio</span><h3>${state.times.length}</h3><p class="subtitle">Equipes</p></div>
+        <div class="card"><span class="card-tag">Atletas</span><h3>${state.competidores.length}</h3><p class="subtitle">Competidores</p></div>
+        <div class="card"><span class="card-tag">Encerrados</span><h3>${encerrados}</h3><p class="subtitle">Resultados</p></div>
+        <div class="card"><span class="card-tag">Pendentes</span><h3>${agendados}</h3><p class="subtitle">Agendamentos</p></div>
+        
+        <!-- Elemento Inteligente Compacto -->
+        <div class="card" id="lootbox-card">
+            <span class="card-tag" style="background: linear-gradient(135deg, color: white, color: white); color: black;">Bónus</span>
+            <div class="box-icon-anim" id="box-wrapper"><i class="fas fa-box" id="box-icon"></i></div>
+            <p class="subtitle" id="box-text" style="font-size: 0.85rem; font-weight: 700; margin-top: 5px; color: #3d2813 !important;">Abrir Caixa!</p>
         </div>
     `;
 
-    const lista = state.confrontos.filter(c => c.status === 'scheduled').slice(0, 3);
+    const lootBox = document.getElementById('lootbox-card');
+    if (!lootBox) return;
 
-    proximos.innerHTML = lista.map(c => {
-        const jogo = state.jogos.find(j => j.id == c.gameId);
-        const time1 = state.times.find(t => t.id == c.team1Id);
-        const time2 = state.times.find(t => t.id == c.team2Id);
-        return `
+    lootBox.addEventListener('click', function (e) {
+        const wrapper = document.getElementById('box-wrapper');
+        const icon = document.getElementById('box-icon');
+        const text = document.getElementById('box-text');
+
+        // Ativa estado aberto
+        wrapper.classList.add('box-open-state');
+        icon.className = 'fas fa-box-open';
+        icon.style.color = 'var(--secondary)';
+        text.innerText = 'Loot Ativo! 🎮';
+
+        // Reseta após a animação (2000ms = 2s)
+        setTimeout(() => {
+            wrapper.classList.remove('box-open-state');
+            icon.className = 'fas fa-box';
+            icon.style.color = '#e67e22';
+            text.innerText = 'Abrir Caixa!';
+        }, 2000);
+
+        // Explosão de emojis
+        const loots = ['🎮', '🕹️', '⚡', '🔥', '👾', '🏆', '👑'];
+        for (let i = 0; i < 10; i++) {
+            const el = document.createElement('div');
+            el.className = 'loot-item';
+            el.innerText = loots[Math.floor(Math.random() * loots.length)];
+
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 70 + Math.random() * 140;
+
+            el.style.left = e.clientX + 'px';
+            el.style.top = e.clientY + 'px';
+            el.style.setProperty('--x', Math.cos(angle) * dist + 'px');
+            el.style.setProperty('--y', Math.sin(angle) * dist + 'px');
+            el.style.setProperty('--r', (Math.random() * 360 - 180) + 'deg');
+
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2000); // Remove após 2s
+        }
+    });
+}
+
+const lista = state.confrontos.filter(c => c.status === 'scheduled').slice(0, 3);
+
+proximos.innerHTML = lista.map(c => {
+    const jogo = state.jogos.find(j => j.id == c.gameId);
+    const time1 = state.times.find(t => t.id == c.team1Id);
+    const time2 = state.times.find(t => t.id == c.team2Id);
+    return `
             <div class="card">
                 <span class="card-tag">${jogo?.name || 'Jogo'}</span>
                 <div class="match-card">
@@ -107,8 +142,8 @@ function renderizarDashboard() {
                 </div>
             </div>
         `;
-    }).join('');
-}
+}).join('');
+
 
 function renderizarJogos() {
     const lista = document.getElementById('list-jogos');
@@ -173,8 +208,8 @@ function renderizarConfrontos() {
                         ${c.status === 'finished' ? 'FINALIZADO' : 'AGENDADO'}
                     </span>
                     ${c.status === 'scheduled'
-                        ? `<button onclick="encerrarConfrontos(${c.id})" style="padding: 4px 8px; font-size: 0.7rem; margin-left: 8px;">Finalizar</button>`
-                        : ''}
+                ? `<button onclick="encerrarConfrontos(${c.id})" style="padding: 4px 8px; font-size: 0.7rem; margin-left: 8px;">Finalizar</button>`
+                : ''}
                 </div>
             </div>
         `;
