@@ -1,51 +1,38 @@
-const USE_API = true; // Mude para false para usar JSON local
-const API_URL = 'http://localhost:3000/api';
-const LOCAL_JSON = './data.json';
+// BASE_URL aponta para o JSON local enquanto a API não está integrada.
+// Quando a API estiver pronta, basta trocar para: 'http://localhost:3000/api'
+const BASE_URL = 'https://localhost:3000/api/';
 
 async function _get(endpoint) {
-    if (USE_API) {
-        // Modo API real
-        const response = await fetch(`${API_URL}${endpoint}`);
-        
+    try {
+    const response = await fetch(`${BASE_URL}${endpoint}`);
+
         if (!response.ok) {
-            throw new Error(`Erro na API ${endpoint}: ${response.status}`);
+            throw new Error(`Erro de link ${response.statusText}`);
         }
-        
-        return await response.json();
-    } else {
-        // Modo JSON local (seu código original)
-        const response = await fetch(LOCAL_JSON);
-        
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar ${endpoint}: status ${response.status}`);
-        }
-        
+        console.log(response);
         const data = await response.json();
-        
-        const rotas = {
-            '/jogos': data.games,
-            '/times': data.teams,
-            '/competidores': data.competitors,
-            '/confrontos': data.matches,
-        };
-        
-        return rotas[endpoint] ?? [];
+        return data;
+    } catch (error) {
+        alert(`tivemos problemas, tente novamente mais tarde. Erro: ${error}`);
     }
 }
 
-// Suas funções permanecem IGUAIS
+// Retorna todos os jogos
 async function getJogos() {
-    return _get('/jogos');
+    return _get('jogos');
 }
 
+// Retorna todos os times
 async function getTimes() {
-    return _get('/times');
+    return _get('times');
 }
 
+// Retorna todos os competidores
 async function getCompetidores() {
-    return _get('/competidores');
+    return _get('competidores' );
 }
 
+// Retorna todos os confrontos
 async function getConfrontos() {
-    return _get('/confrontos');
+    return _get('confrontos');
 }
